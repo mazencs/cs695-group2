@@ -4,7 +4,7 @@
 ;
 ; This file contains a list of POSITIVE opinion words (or sentiment words).
 ;
-; This file and the papers can all be downloaded from 
+; This file and the papers can all be downloaded from :
 ;    http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html
 ;
 ; If you use this list, please cite one of the following two papers:
