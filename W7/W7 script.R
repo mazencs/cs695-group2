@@ -1,5 +1,5 @@
 #********************************************
-#         Create a Customer Profile
+##         Create a Customer Profile
 #********************************************
 install.packages("readr")
 install.packages("googleVis")
