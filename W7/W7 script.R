@@ -14,7 +14,7 @@ library("googleVis")
 library("plyr")
 
 # Load data
-Trump <- read_csv("~/Trump.csv")
+Trump <- read_csv("Trump.csv")
 
 # Show the distribution of users by location (city) with Google Map
 # !!! It takes time to show all the locations, so be patient !!!
@@ -45,3 +45,4 @@ dfrm <-data.frame(table(Trump[,c("USER_GENDER","days")]))
 genderDays = reshape(dfrm,direction="wide",timevar="days",idvar="USER_GENDER")
 Bar <- gvisBarChart(genderDays)
 plot(Bar)
+

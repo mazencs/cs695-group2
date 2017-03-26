@@ -12,7 +12,7 @@ install.packages("dplyr")
 
 
 library(readr)
-gear <- read_delim("Samsung Tweets.csv", ";", escape_double = FALSE, trim_ws = TRUE)
+gear <- read_delim("samsung tweets.csv", ";", escape_double = FALSE, trim_ws = TRUE)
 geartweets <- gear$tweettext
 
 
@@ -90,14 +90,11 @@ plot(Hist)
 
 negScore = subset(score, score < 0)
 posScore = subset(score, score > 0)
-neuScore = subset(score, score == 0)
-
 negNum= length(negScore)
 posNum= length(posScore)
-neuNum= length(neuScore)
 
-dftemp=data.frame(topic=c("Negative", "Positive", "Neutral"), 
-                  number=c(negNum,posNum,neuNum))
+dftemp=data.frame(topic=c("Negative", "Positive"), 
+                  number=c(negNum,posNum))
 
 Pie <- gvisPieChart(dftemp)
 plot(Pie)
