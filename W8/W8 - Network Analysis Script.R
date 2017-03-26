@@ -28,7 +28,7 @@ library("dplyr")
 #         Social Network Analysis
 #********************************************
 
-# Load data
+# *Load data
 Trump <- read_csv("Trump.csv")
 tweets = Trump$MESSAGE_BODY
 tweets = as.character(tweets)
