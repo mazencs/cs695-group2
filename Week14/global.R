@@ -20,7 +20,7 @@ library(igraph)
 library(readr)
 
 # Load data set
-BKdata <- readRDS("BKdata.rds")
+BKdata <- readRDS("merola.rds")
 df <- BKdata
 tweets <- df$MESSAGE_BODY
 tweets = as.character(tweets)
@@ -37,7 +37,7 @@ tdm = TermDocumentMatrix(
     wordLengths=c(3,20),
     removePunctuation = TRUE,
     stopwords = c("the", "a", stopwords("english")),
-    removeNumbers = TRUE, tolower = TRUE) )
+    removeNumbers = TRUE, tolower = FALSE) )
 
 # convert as matrix
 tdm = as.matrix(tdm)
@@ -171,7 +171,7 @@ central$degree <- sna::degree(m2)
 # Clasterize betweenness values to get groups of nodes 
 central %<>%
   mutate(size = log(central$betweenness)) %>%
-  mutate(size = ifelse(size == -Inf, 1, size))
+ mutate(size = ifelse(size == -Inf, 1, size))
 
 # Number of groups for colors
 N <- 9
@@ -219,7 +219,7 @@ dfrm <-table(df[,c("USER_GENDER","days")])
 #********************************************
 #         Topic Analysis
 #********************************************
-sports.words = scan('Sports_Word.txt', what='character', comment.char=';')
+merola.words = scan('merola_products.txt', what='character', comment.char=';')
 
 score.topic = function(sentences, dict, .progress='none')
 {
@@ -259,7 +259,7 @@ score.topic = function(sentences, dict, .progress='none')
   return(topicscores.df)
 }
 
-topic.scores= score.topic(tweets, sports.words, .progress='text')
+topic.scores= score.topic(tweets, merola.words, .progress='text')
 topic.mentioned = subset(topic.scores, score !=0)
 
 N= nrow(topic.scores)

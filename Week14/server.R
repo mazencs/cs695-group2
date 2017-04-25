@@ -46,7 +46,7 @@ function (input, output) {
     
    
     barplot(dfrm, main="Number of posts by Days and Gender",
-            xlab="Days", col=c("darkblue","red"),
+            xlab="Days", col=c("darkblue","red","green"),
             legend = rownames(dfrm), beside=TRUE)
     
   })
@@ -61,7 +61,7 @@ function (input, output) {
     lbls <- paste(lbls, pct) # add percents to labels 
     lbls <- paste(lbls,"%",sep="") # ad % to labels 
     pie(slices,labels = lbls, col=rainbow(length(lbls)),
-        main="Pie Chart of Tweets on Sports")
+        main="Pie Chart of Tweets on merola")
     
   })
   

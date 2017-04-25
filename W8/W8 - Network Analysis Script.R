@@ -25,7 +25,7 @@ library("magrittr")
 library("dplyr")
 
 #********************************************
-#         Social Network Analysis
+##         Social Network Analysis
 #********************************************
 
 # *Load data
