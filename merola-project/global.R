@@ -20,7 +20,7 @@ library(igraph)
 library(readr)
 
 # Load data set
-BKdata <- read_csv("merola22.csv")
+BKdata <- readRDS("merola.rds")
 df <- BKdata
 tweets <- df$MESSAGE_BODY
 tweets = as.character(tweets)
@@ -103,13 +103,14 @@ sentiment.scores= score.sentiment(tweets, pos.words, neg.words, .progress='text'
 #         Network Analysis
 #********************************************
 
+
 screenname = df$USER_SCREEN_NAME
 screenname = as.character(screenname)
 
 # Generate edge list from tweets
 galaxy <- 
   cbind(1:length(tweets), screenname,tweets) %>% 
-  set_colnames(c("timestamp", "screenname", "text")) %>%
+  set_colnames(c("id", "screenname", "tweet")) %>%
   tbl_df()
 
 # Extracts poster information
@@ -215,12 +216,14 @@ PlotGraph(m2,
 )
 
 #********************************************
-#         Consumer Profile
+#         Consumer Profile  
 #********************************************
 
+
 # User posting time by gender
-df$days <- weekdays(as.POSIXlt(df$MESSAGE_POSTED_TIME))
-dfrm <-table(df[,c("USER_GENDER","days")])
+#df$days <- weekdays(as.POSIXlt(df$MESSAGE_POSTED_TIME))
+#dfrm <-table(df[,c("USER_GENDER","days")])
+
 
 #********************************************
 #         Topic Analysis
@@ -229,7 +232,7 @@ merola.words = scan('merola_products.txt', what='character', comment.char=';')
 
 score.topic = function(sentences, dict, .progress='none')
 {
-  
+ 
   # we got a vector of sentences. plyr will handle a list
   # or a vector as an "l" for us
   # we want a simple array of scores back, so we use
