@@ -1,4 +1,4 @@
-﻿LIVING ROOMS 
+ LIVING ROOMS 
 8
 Floor and wall tiles
 Decorative profiles
@@ -37,3 +37,6 @@ Tile-Laying Materials
 Grouting Materials
 Waterproofing Systems
 Tiled Showers
+measurements
+heights
+width

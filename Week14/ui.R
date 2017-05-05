@@ -82,15 +82,21 @@ In case of merola company , we can notice that the top 4 text with high frequenc
 fluidRow(
   
   box(
-    
-    HTML('<center><img src="n.png" width="400"></center>')
-  
+    width = 8, 
+      title = "Network Graph of Merola tile", 
+   plotOutput("distPlot3")
+   
+   
+
     
   ) ,
   box(
     width = 4, 
     background = "olive",
-    "still in progress"
+    "In the graph , The central node represent merola tile and other nodes represent the customers .The network size is small Due to the small size of merola dataset . 
+The analysis of the centrality measures can be summed in the following points :
+    - Degree centrality :measure network activity for a node by using the concept of degrees -- the number of direct connections a node has. What really matters is where those connections lead to -- and how they connect the otherwise unconnected.merola only connects to customers , but nothing goes beyond that , which indicates the weak activity of merola.
+    - Network Centralization: merola network is very centralized ,if the main hub (merola ) removed the network abruptly fails."
   )
   ), 
 

@@ -1,3 +1,7 @@
+# global.R ##
+# Put data loading and commonly used functions in this global script
+# You need to install "shiny" and "shinydashboard" packages in your RStudio
+
 library(shiny)
 library(shinydashboard)
 library(tm)
@@ -16,17 +20,15 @@ library(igraph)
 library(readr)
 
 # Load data set
-meroladata <- readRDS("merola.rds")
-df <- meroladata
+BKdata <- read_csv("merola22.csv")
+df <- BKdata
 tweets <- df$MESSAGE_BODY
 tweets = as.character(tweets)
 
 #********************************************
 #         Word Cloud
 #********************************************
-tweets1 = str_replace_all(tweets, "[^[:alnum:]]", " ")
-
-corpus = Corpus(VectorSource(tweets1))
+corpus = Corpus(VectorSource(tweets))
 
 # create term-document matrix
 tdm = TermDocumentMatrix(
@@ -35,7 +37,7 @@ tdm = TermDocumentMatrix(
     wordLengths=c(3,20),
     removePunctuation = TRUE,
     stopwords = c("the", "a", stopwords("english")),
-    removeNumbers = TRUE, tolower = TRUE) )
+    removeNumbers = TRUE, tolower = FALSE) )
 
 # convert as matrix
 tdm = as.matrix(tdm)
@@ -106,8 +108,8 @@ screenname = as.character(screenname)
 
 # Generate edge list from tweets
 galaxy <- 
-  cbind(1:length(tweets),  screenname,tweets) %>% 
-  set_colnames(c("id", "screenname", "tweet")) %>%
+  cbind(1:length(tweets), screenname,tweets) %>% 
+  set_colnames(c("timestamp", "screenname", "text")) %>%
   tbl_df()
 
 # Extracts poster information
@@ -211,3 +213,62 @@ PlotGraph(m2,
           sizes = central$size,
           labels = central$label
 )
+
+#********************************************
+#         Consumer Profile
+#********************************************
+
+# User posting time by gender
+df$days <- weekdays(as.POSIXlt(df$MESSAGE_POSTED_TIME))
+dfrm <-table(df[,c("USER_GENDER","days")])
+
+#********************************************
+#         Topic Analysis
+#********************************************
+merola.words = scan('merola_products.txt', what='character', comment.char=';')
+
+score.topic = function(sentences, dict, .progress='none')
+{
+  
+  # we got a vector of sentences. plyr will handle a list
+  # or a vector as an "l" for us
+  # we want a simple array of scores back, so we use
+  # "l" + "a" + "ply" = "laply":
+  scores = laply(sentences, function(sentence, dict) {
+    
+    # clean up sentences with R's regex-driven global substitute, gsub():
+    sentence = gsub('[[:punct:]]', '', sentence)
+    sentence = gsub('[[:cntrl:]]', '', sentence)
+    sentence = gsub('\\d+', '', sentence)
+    # and convert to lower case:
+    sentence = tolower(sentence)
+    
+    # split into words. str_split is in the stringr package
+    word.list = str_split(sentence, '\\s+')
+    # sometimes a list() is one level of hierarchy too much
+    words = unlist(word.list)
+    
+    # compare our words to the dictionaries of positive & negative terms
+    topic.matches = match(words, dict)
+    
+    # match() returns the position of the matched term or NA
+    # we just want a TRUE/FALSE:
+    topic.matches = !is.na(topic.matches)
+    
+    # and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():
+    score = sum(topic.matches)
+    
+    return(score)
+  }, dict, .progress=.progress )
+  
+  topicscores.df = data.frame(score=scores, text=sentences)
+  return(topicscores.df)
+}
+
+topic.scores= score.topic(tweets, merola.words, .progress='text')
+topic.mentioned = subset(topic.scores, score !=0)
+
+N= nrow(topic.scores)
+Nmentioned = nrow(topic.mentioned)
+
+

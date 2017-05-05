@@ -103,12 +103,13 @@ sentiment.scores= score.sentiment(tweets, pos.words, neg.words, .progress='text'
 #         Network Analysis
 #********************************************
 
+
 screenname = df$USER_SCREEN_NAME
 screenname = as.character(screenname)
 
 # Generate edge list from tweets
 galaxy <- 
-  cbind(1:length(tweets),  screenname,tweets) %>% 
+  cbind(1:length(tweets), screenname,tweets) %>% 
   set_colnames(c("id", "screenname", "tweet")) %>%
   tbl_df()
 
@@ -148,7 +149,7 @@ g1 <- as(m, "graphNEL")
 clust <- igraph::components(graph_from_adjacency_matrix(m), mode = "weak")
 table(clust$csize)
 # The largest cluster contains 891 nodes, so we create a graph of it
-large_clusters <- which(clust$csize > 800)
+large_clusters <- which(clust$csize > 30)
 selected_nodes <- names(clust$membership[clust$membership %in% large_clusters])
 selected_nodes <- which(rownames(m) %in% selected_nodes)
 m2 <- m[selected_nodes, selected_nodes]
@@ -170,11 +171,11 @@ central$degree <- sna::degree(m2)
 
 # Clasterize betweenness values to get groups of nodes 
 central %<>%
-  mutate(size = log(central$betweenness)) %>%
- mutate(size = ifelse(size == -Inf, 1, size))
+  mutate(size = log(central$degree)) %>%
+  mutate(size = ifelse(size == -Inf, 1, size))
 
 # Number of groups for colors
-N <- 9
+N <- 2
 # Colors for nodes
 pal <- brewer.pal(N, "Oranges")
 
@@ -184,7 +185,7 @@ central %<>%
          color = pal[group])
 
 central %<>%
-  mutate(label = ifelse(group < 9, "", as.character(central$nodes.g2.)))
+  mutate(label = ifelse(group < 3, "", as.character(central$nodes.g2.)))
 
 # Updates node sizes
 central %<>%
@@ -197,7 +198,7 @@ central <- central[indx, ]
 # Plot function
 PlotGraph <- function(m, colors, sizes, labels, filename, title = "") {
   m[m == Inf] <- 0
-   gplot(m, gmode = "graph", 
+  gplot(m, gmode = "graph", 
         label = labels,
         label.cex = 2,
         vertex.col = colors,
@@ -206,15 +207,23 @@ PlotGraph <- function(m, colors, sizes, labels, filename, title = "") {
         vertex.cex = sizes, 
         main = title,
         cex.main = 4)
-  }
+}
+set.seed(1)
+PlotGraph(m2, 
+          colors = central$color,
+          sizes = central$size,
+          labels = central$label
+)
 
 #********************************************
-#         Consumer Profile
+#         Consumer Profile  
 #********************************************
+
 
 # User posting time by gender
-df$days <- weekdays(as.POSIXlt(df$MESSAGE_POSTED_TIME))
-dfrm <-table(df[,c("USER_GENDER","days")])
+#df$days <- weekdays(as.POSIXlt(df$MESSAGE_POSTED_TIME))
+#dfrm <-table(df[,c("USER_GENDER","days")])
+
 
 #********************************************
 #         Topic Analysis
